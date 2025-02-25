@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Password Generator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="https://brushwild.github.io" class="nav-logo">Secure Password Generator</a>
+            <div class="social-links">
+                <a href="https://github.com/BrushWild" target="_blank" class="social-link">
+                    <span class="material-symbols-rounded">code</span>
+                </a>
+                <button class="theme-toggle" aria-label="Toggle theme">
+                    <span class="material-symbols-rounded">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main>
+            <div class="password-display">
+                <input type="text" id="passwordOutput" readonly>
+                <input type="text" id="rawWordsOutput" readonly>
+                <input type="text" id="dicewareNumbersOutput" readonly>
+                <button id="copyButton" class="icon-button">
+                    <span class="material-symbols-rounded">content_copy</span>
+                </button>
+            </div>
+
+            <div class="options-panel">
+                <div class="slider-container">
+                    <label for="wordCount">Number of Words</label>
+                    <input type="range" id="wordCount" min="3" max="8" value="4">
+                    <span id="wordCountValue">4</span>
+                </div>
+
+                <div class="slider-container">
+                    <label for="scoreThreshold">Minimum Password Score
+                        <span class="tooltip-trigger material-symbols-rounded">info</span>
+                        <span class="tooltip">Password score is based on word count, natural language patterns, and word length balance. Higher scores indicate more memorable and secure passwords.</span>
+                    </label>
+                    <input type="range" id="scoreThreshold" min="0" max="10" value="5" step="0.5">
+                    <span id="scoreThresholdValue">5</span>
+                </div>
+
+                <div class="format-options">
+                    <label>Format:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="lowercase" name="format" value="lowercase" checked>
+                        <label for="lowercase">lowercase</label>
+
+                        <input type="radio" id="camelCase" name="format" value="camelCase">
+                        <label for="camelCase">camelCase</label>
+
+                        <input type="radio" id="AllCaps" name="format" value="AllCaps">
+                        <label for="AllCaps">AllCaps</label>
+                    </div>
+                </div>
+
+                <div class="spacing-options">
+                    <label>Spacing:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="withSpaces" name="spacing" value="withSpaces" checked>
+                        <label for="withSpaces">With Spaces</label>
+
+                        <input type="radio" id="noSpaces" name="spacing" value="noSpaces">
+                        <label for="noSpaces">No Spaces</label>
+                    </div>
+                </div>
+
+                <div class="switch-container">
+                    <label for="specialChars">Use Special Characters</label>
+                    <label class="switch">
+                        <input type="checkbox" id="specialChars">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="slider-container" id="specialCharsDensityContainer">
+                    <label for="specialCharsDensity">Special Character Density</label>
+                    <input type="range" id="specialCharsDensity" min="1" max="100" value="1" step="1">
+                    <span id="specialCharsDensityValue">1%</span>
+                </div>
+            </div>
+
+            <button id="generateButton" class="primary-button">
+                <span class="material-symbols-rounded">autorenew</span>
+                Generate Password
+            </button>
+
+            <div class="score-display">
+                <label>Password Score:</label>
+                <div class="score-bar">
+                    <div id="scoreIndicator" class="score-indicator"></div>
+                </div>
+                <span id="scoreValue">0</span>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

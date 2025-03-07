@@ -159,6 +159,9 @@ function scorePassword(words) {
 
 }
 
+// Global variable declaration
+let spacing;
+
 // Main password generation function
 async function generatePassword() {
     console.log('Starting password generation process...');
@@ -428,9 +431,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Add event listener for special characters toggle
+    document.getElementById('specialChars').addEventListener('change', updatePasswordDisplay);
 
     // Add event listener for special characters density
     document.getElementById('specialCharsDensity').addEventListener('input', updatePasswordDisplay);
+    
+    // Add event listener for enforce alliteration toggle
+    document.getElementById('alliteration').addEventListener('change', generatePassword);
     
     // Generate initial password
     generatePassword();

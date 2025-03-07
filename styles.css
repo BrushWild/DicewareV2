@@ -342,46 +342,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     color: var(--color-on-surface);
     opacity: 0.8;
 }
-/* .primary-button {
-    width: 100%;
-    padding: 1rem;
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-}
-
-.primary-button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-} */
-
-/* .icon-button {
-    padding: 0.75rem;
-    background-color: var(--color-secondary);
-    color: var(--color-on-surface);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 0.5rem;
-    cursor: help;
-    color: var(--color-on-surface);
-    opacity: 0.7;
-    transition: var(--transition);
-    position: relative;
-} */
 
 .tooltip-trigger:hover {
     opacity: 1;
@@ -392,7 +352,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     display: none;
     position: absolute;
     left: 50%;
-    /* top: 100%; */
     transform: translateX(-50%);
     width: 250px;
     padding: 0.75rem;

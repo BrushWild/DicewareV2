@@ -96,6 +96,11 @@ function toCamelCase(text) {
     }).join(' ');
 }
 
+// Function to convert text to snake_case
+function toSnakeCase(text) {
+    return text.toLowerCase().replace(/\s+/g, '_');
+}
+
 // Function to convert text to AllCaps
 function toAllCaps(text) {
     return text.split(' ').map((word, index) => {
@@ -160,7 +165,7 @@ async function generatePassword() {
     const wordCount = parseInt(document.getElementById('wordCount').value);
     const scoreThreshold = parseFloat(document.getElementById('scoreThreshold').value);
     const format = document.querySelector('input[name="format"]:checked').value;
-    const spacing = document.querySelector('input[name="spacing"]:checked').value;
+    spacing = document.querySelector('input[name="spacing"]:checked').value;
     const useSpecialChars = document.getElementById('specialChars').checked;
     const useAlliteration = document.getElementById('alliteration').checked;
     
@@ -226,19 +231,27 @@ async function generatePassword() {
         document.getElementById('rawWordsOutput').value = words.join(' ').toLowerCase();
         document.getElementById('dicewareNumbersOutput').value = dicewareNumbers.join(' ');
 
+        const wordsSplit = document.getElementById('rawWordsOutput').value.split(' ');
+
         // Apply formatting first
         let password;
         switch(format) {
             case 'camelCase':
-                password = toCamelCase(words.join(' '));
+                password = toCamelCase(wordsSplit.join(' '));
                 break;
             case 'lowercase':
-                password = words.join(' ').toLowerCase();
+                password = wordsSplit.join(' ').toLowerCase();
                 break;
             case 'AllCaps':
-                password = toAllCaps(words.join(' '));
+                password = toAllCaps(wordsSplit.join(' '));
+                break;
+            case 'snakeCase':
+                password = toSnakeCase(wordsSplit.join(' '));
+                spacing = 'noSpaces';
                 break;
         }
+
+        password = password.trim(); // Add this line to remove whitespace
 
         console.log('After formatting:', password);
 
@@ -271,19 +284,26 @@ async function generatePassword() {
     console.log('Final score:', currentScore);
     document.getElementById('passwordOutput').value = finalPassword;
     document.getElementById('scoreValue').textContent = currentScore.toFixed(1);
-    document.getElementById('scoreIndicator').style.width = `${currentScore * 10}%`;
+    //document.getElementById('scoreIndicator').style.width = `${currentScore * 10}%`;
 }
 
 // Function to update password display without regenerating password
 function updatePasswordDisplay() {
+    console.log('Starting password display update...');
     // Get the raw words from the display
     const rawWords = document.getElementById('rawWordsOutput').value;
-    if (!rawWords) return; // No password has been generated yet
+    if (!rawWords) {
+        console.log('No raw words found, exiting...');
+        return; // No password has been generated yet
+    }
+    console.log('Raw words:', rawWords);
     
     const words = rawWords.split(' ');
     const format = document.querySelector('input[name="format"]:checked').value;
-    const spacing = document.querySelector('input[name="spacing"]:checked').value;
+    spacing = document.querySelector('input[name="spacing"]:checked').value;
     const useSpecialChars = document.getElementById('specialChars').checked;
+    
+    console.log(`Settings: format=${format}, spacing=${spacing}, useSpecialChars=${useSpecialChars}`);
     
     // Apply formatting first
     let password;
@@ -297,19 +317,33 @@ function updatePasswordDisplay() {
         case 'AllCaps':
             password = toAllCaps(words.join(' '));
             break;
+        case 'snakeCase':
+            password = toSnakeCase(words.join(' '));
+            spacing = 'noSpaces';
+            break;
     }
+    console.log('After formatting:', password);
+
+    password.trim(); // Add this line to remove whitespace
     
     // Then apply spacing
     if (spacing === 'noSpaces') {
         password = password.replace(/\s+/g, '');
+        console.log('After removing spaces:', password);
     }
     
     // Apply special characters if selected
     if (useSpecialChars) {
+        const originalPassword = password;
         password = applySpecialChars(password);
+        console.log('Special characters applied:', {
+            before: originalPassword,
+            after: password
+        });
     }
     
     // Update UI
+    console.log('Final password:', password);
     document.getElementById('passwordOutput').value = password;
 }
 

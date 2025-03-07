@@ -430,26 +430,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     opacity: 1;
 }
 
-.score-bar {
-    height: 8px;
-    background-color: var(--color-secondary);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, margin 0.3s ease-in-out;
-}
 
-.experimental-enabled .score-bar {
-    /* margin-top: 2rem; */
-    max-height: 100px;
-    opacity: 1;
-}
-
-.score-indicator {
-    height: 100%;
-    background-color: var(--color-primary);
-    transition: width 0.3s ease;
-}
 
 /* Theme toggle */
 .theme-toggle {

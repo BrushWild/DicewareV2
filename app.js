@@ -394,8 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Add event listener for special characters toggle
-    //document.getElementById('specialChars').addEventListener('change', updatePasswordDisplay);
-    
+
     // Add event listener for special characters density
     document.getElementById('specialCharsDensity').addEventListener('input', updatePasswordDisplay);
     
@@ -407,25 +406,52 @@ document.addEventListener('DOMContentLoaded', () => {
 async function handleWordCountChange(newWordCount) {
     const rawWords = document.getElementById('rawWordsOutput').value;
     if (!rawWords) return; // No password has been generated yet
+
+    const rawDicewareNumbers = document.getElementById('dicewareNumbersOutput').value;
+    if (!rawDicewareNumbers) return; // No password has been generated yet
     
     const currentWords = rawWords.split(' ');
+    const currentDicewareNumbers = rawDicewareNumbers.split(' ');
     const wordList = await loadDicewareList();
+    const useAlliteration = document.getElementById('alliteration').checked;
+    const firstLetter = currentWords[0].charAt(0).toLowerCase();
     
     if (newWordCount > currentWords.length) {
         // Add more words
         for (let i = currentWords.length; i < newWordCount; i++) {
-            const number = generateDicewareNumber();
-            const word = wordList.get(number) || 'error';
+            let word = '';
+            let number = '';
+            
+            if (useAlliteration) {
+                // Find a word starting with the same letter as the first word
+                let matchFound = false;
+                while (!matchFound) {
+                    number = generateDicewareNumber();
+                    word = wordList.get(number) || 'error';
+                    if (word.charAt(0).toLowerCase() === firstLetter) {
+                        matchFound = true;
+                    }
+                }
+            } else {
+                number = generateDicewareNumber();
+                word = wordList.get(number) || 'error';
+            }
+            
             currentWords.push(word);
+            currentDicewareNumbers.push(number);
         }
     } else if (newWordCount < currentWords.length) {
         // Remove words from the end
         currentWords.length = newWordCount;
+        currentDicewareNumbers.length = newWordCount;
     }
     
     // Update raw words display
     document.getElementById('rawWordsOutput').value = currentWords.join(' ');
     
+    // Update diceware generated numbers display
+    document.getElementById('dicewareNumbersOutput').value = currentDicewareNumbers.join(' ');
+
     // Update formatted password display
     updatePasswordDisplay();
 }

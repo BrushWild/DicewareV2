@@ -117,14 +117,14 @@ function scorePassword(words) {
     // 2. Natural language patterns (3 points)
     const patterns = {
         // Subject-verb-object pattern
-        subject: /^(i|we|you|they|he|she|it|the|my|your|our|their)\s/i,
-        verb: /\s(is|are|was|were|will|would|can|could|have|had|do|does|go|went|make|made)\s/i,
-        object: /\s(it|them|that|this|the|a|an)\s/i,
+        subject: /^(anybody|anyone|anything|author|body|everyone|friend|group|human|individual|member|person|player|student|team|user|worker)\s/i,
+        verb: /\s(accept|achieve|acquire|act|add|adjust|advance|agree|aim|allow|appear|apply|approach|arise|arrange|arrive|ask|attach|avoid|become|begin)\s/i,
+        object: /\s(ability|account|action|activity|advice|amount|answer|area|article|aspect|asset|basis|benefit|case|change|choice|class|code|content|data)\s/i,
         // Descriptive patterns
-        adjective: /\s(big|small|good|bad|new|old|high|low|long|short|great|nice|cool|warm)\s/i,
-        adverb: /\s(quickly|slowly|carefully|easily|safely|well|very|really|always|never)\s/i,
+        adjective: /\s(able|active|actual|agile|alive|amazing|aware|basic|better|bright|busy|calm|clean|clear|close|common|cool|correct|creative|direct)\s/i,
+        adverb: /\s(abruptly|absently|actively|actually|again|almost|already|always|annually|aptly|around|aside|astride|atop|away|badly|barely|basically|boldly|briefly)\s/i,
         // Connecting words
-        conjunction: /\s(and|or|but|because|while|when|if|then|so|that)\s/i
+        conjunction: /\s(although|amid|among|and|because|before|besides|between|but|except|however|if|instead|like|nor|or|plus|since|than|though)\s/i
     };
 
     Object.values(patterns).forEach(pattern => {
@@ -162,8 +162,9 @@ async function generatePassword() {
     const format = document.querySelector('input[name="format"]:checked').value;
     const spacing = document.querySelector('input[name="spacing"]:checked').value;
     const useSpecialChars = document.getElementById('specialChars').checked;
+    const useAlliteration = document.getElementById('alliteration').checked;
     
-    console.log(`Settings: wordCount=${wordCount}, scoreThreshold=${scoreThreshold}, format=${format}, spacing=${spacing}, useSpecialChars=${useSpecialChars}`);
+    console.log(`Settings: wordCount=${wordCount}, scoreThreshold=${scoreThreshold}, format=${format}, spacing=${spacing}, useSpecialChars=${useSpecialChars}, useAlliteration=${useAlliteration}`);
 
     const wordList = await loadDicewareList();
     console.log(`Loaded word list with ${wordList.size} words`);
@@ -183,12 +184,41 @@ async function generatePassword() {
         // Generate words
         let words = [];
         let dicewareNumbers = [];
+        let firstLetter = '';
+
         for (let i = 0; i < wordCount; i++) {
-            const number = generateDicewareNumber();
-            const word = wordList.get(number) || 'error';
+            let word = '';
+            let number = '';
+
+            if (useAlliteration && i > 0) {
+                // Find a word starting with the same letter as the first word
+                let matchFound = false;
+                let attemptCount = 0;
+
+                while (!matchFound) {
+                    number = generateDicewareNumber();
+                    word = wordList.get(number) || 'error';
+                    if (word.charAt(0).toLowerCase() === firstLetter) {
+                        matchFound = true;
+                    }
+                    attemptCount++;
+                }
+
+                if (!matchFound) {
+                    word = wordList.get(number) || 'error'; // Use the last generated word if no match found
+                }
+            } else {
+                number = generateDicewareNumber();
+                word = wordList.get(number) || 'error';
+                if (i === 0 && useAlliteration) {
+                    firstLetter = word.charAt(0).toLowerCase();
+                }
+            }
+
             words.push(word);
             dicewareNumbers.push(number);
         }
+
         console.log('Generated words:', words);
         console.log('Diceware numbers:', dicewareNumbers);
 
@@ -198,8 +228,7 @@ async function generatePassword() {
 
         // Apply formatting first
         let password;
-        switch(format)
-        {
+        switch(format) {
             case 'camelCase':
                 password = toCamelCase(words.join(' '));
                 break;
@@ -211,18 +240,13 @@ async function generatePassword() {
                 break;
         }
 
-        // if (format === 'camelCase') {
-        //     password = toCamelCase(words.join(' '));
-        // } else {
-        //     password = words.join(' ').toLowerCase();
-        // }
         console.log('After formatting:', password);
 
         // Then apply spacing
         if (spacing === 'noSpaces') {
             password = password.replace(/\s+/g, '');
         }
-        console.log('After formatting:', password);
+        console.log('After spacing:', password);
 
         // Score the password
         currentScore = scorePassword(words.join(' '));
@@ -234,7 +258,7 @@ async function generatePassword() {
             console.log('After special characters:', password);
         }
 
-        if (currentScore >= scoreThreshold || attempts >= maxAttempts) {
+        if (currentScore >= scoreThreshold || (!useAlliteration && attempts >= maxAttempts)) {
             finalPassword = password;
             break;
         }
@@ -248,6 +272,45 @@ async function generatePassword() {
     document.getElementById('passwordOutput').value = finalPassword;
     document.getElementById('scoreValue').textContent = currentScore.toFixed(1);
     document.getElementById('scoreIndicator').style.width = `${currentScore * 10}%`;
+}
+
+// Function to update password display without regenerating password
+function updatePasswordDisplay() {
+    // Get the raw words from the display
+    const rawWords = document.getElementById('rawWordsOutput').value;
+    if (!rawWords) return; // No password has been generated yet
+    
+    const words = rawWords.split(' ');
+    const format = document.querySelector('input[name="format"]:checked').value;
+    const spacing = document.querySelector('input[name="spacing"]:checked').value;
+    const useSpecialChars = document.getElementById('specialChars').checked;
+    
+    // Apply formatting first
+    let password;
+    switch(format) {
+        case 'camelCase':
+            password = toCamelCase(words.join(' '));
+            break;
+        case 'lowercase':
+            password = words.join(' ').toLowerCase();
+            break;
+        case 'AllCaps':
+            password = toAllCaps(words.join(' '));
+            break;
+    }
+    
+    // Then apply spacing
+    if (spacing === 'noSpaces') {
+        password = password.replace(/\s+/g, '');
+    }
+    
+    // Apply special characters if selected
+    if (useSpecialChars) {
+        password = applySpecialChars(password);
+    }
+    
+    // Update UI
+    document.getElementById('passwordOutput').value = password;
 }
 
 // Event Listeners
@@ -288,8 +351,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generateButton').addEventListener('click', generatePassword);
 
     // Update displayed values for sliders
-    document.getElementById('wordCount').addEventListener('input', (e) => {
-        document.getElementById('wordCountValue').textContent = e.target.value;
+    document.getElementById('wordCount').addEventListener('input', async (e) => {
+        const newWordCount = parseInt(e.target.value);
+        document.getElementById('wordCountValue').textContent = newWordCount;
+        await handleWordCountChange(newWordCount);
     });
 
     document.getElementById('scoreThreshold').addEventListener('input', (e) => {
@@ -300,6 +365,67 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('specialCharsDensityValue').textContent = `${e.target.value}%`;
     });
 
+    // Experimental features toggle
+    document.getElementById('experimentalFeatures').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            document.body.classList.add('experimental-enabled');
+        } else {
+            document.body.classList.remove('experimental-enabled');
+        }
+    });
+
+    // Special Characters toggle
+    document.getElementById('specialChars').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            document.body.classList.add('special-chars-enabled');
+        } else {
+            document.body.classList.remove('special-chars-enabled');
+        }
+    });
+
+    // Add event listeners for format options
+    document.querySelectorAll('input[name="format"]').forEach(radio => {
+        radio.addEventListener('change', updatePasswordDisplay);
+    });
+    
+    // Add event listeners for spacing options
+    document.querySelectorAll('input[name="spacing"]').forEach(radio => {
+        radio.addEventListener('change', updatePasswordDisplay);
+    });
+    
+    // Add event listener for special characters toggle
+    //document.getElementById('specialChars').addEventListener('change', updatePasswordDisplay);
+    
+    // Add event listener for special characters density
+    document.getElementById('specialCharsDensity').addEventListener('input', updatePasswordDisplay);
+    
     // Generate initial password
     generatePassword();
 });
+
+// Function to handle word count changes
+async function handleWordCountChange(newWordCount) {
+    const rawWords = document.getElementById('rawWordsOutput').value;
+    if (!rawWords) return; // No password has been generated yet
+    
+    const currentWords = rawWords.split(' ');
+    const wordList = await loadDicewareList();
+    
+    if (newWordCount > currentWords.length) {
+        // Add more words
+        for (let i = currentWords.length; i < newWordCount; i++) {
+            const number = generateDicewareNumber();
+            const word = wordList.get(number) || 'error';
+            currentWords.push(word);
+        }
+    } else if (newWordCount < currentWords.length) {
+        // Remove words from the end
+        currentWords.length = newWordCount;
+    }
+    
+    // Update raw words display
+    document.getElementById('rawWordsOutput').value = currentWords.join(' ');
+    
+    // Update formatted password display
+    updatePasswordDisplay();
+}

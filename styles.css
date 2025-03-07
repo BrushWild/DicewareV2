@@ -124,6 +124,29 @@ main {
     margin-bottom: 2rem;
 }
 
+.primary-button {
+    margin: 2rem 0;
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.primary-button:hover {
+    opacity: 0.9;
+}
+
 .password-display input[type="text"] {
     width: 100%;
     padding: 1rem;
@@ -143,7 +166,7 @@ main {
 .icon-button {
     position: absolute;
     right: 0.5rem;
-    top: 0.5rem;
+    top: 2.5rem;
     background: none;
     border: none;
     color: var(--color-on-surface);
@@ -179,7 +202,7 @@ main {
 .options-panel {
     display: grid;
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
 }
 
 .slider-container {
@@ -221,16 +244,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
     gap: 0.5rem;
 }
 
-.radio-group {
+.radio-group, .checkbox-group {
     display: flex;
     gap: 1.5rem;
 }
 
-.radio-group input[type="radio"] {
+.radio-group input[type="radio"],
+.checkbox-group input[type="checkbox"] {
     display: none;
 }
 
-.radio-group label {
+.radio-group label,
+.checkbox-group label {
     padding: 0.5rem 1rem;
     background-color: var(--color-secondary);
     border-radius: var(--border-radius);
@@ -238,13 +263,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
     transition: var(--transition);
 }
 
-.radio-group label:hover {
+.radio-group label:hover,
+.checkbox-group label:hover {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
     opacity: 0.8;
 }
 
-.radio-group input[type="radio"]:checked + label {
+.radio-group input[type="radio"]:checked + label,
+.checkbox-group input[type="checkbox"]:checked + label {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 }
@@ -305,7 +332,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 /* Buttons */
-.primary-button {
+.password-display label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-on-surface);
+    opacity: 0.8;
+}
+/* .primary-button {
     width: 100%;
     padding: 1rem;
     background-color: var(--color-primary);
@@ -325,7 +359,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .primary-button:hover {
     opacity: 0.9;
     transform: translateY(-1px);
-}
+} */
 
 /* .icon-button {
     padding: 0.75rem;
@@ -380,9 +414,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Score display */
 .score-display {
-    margin-top: 2rem;
-    display: grid;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, margin 0.3s ease-in-out;
     gap: 0.5rem;
+}
+
+/* When experimental features are enabled */
+.experimental-enabled .score-display {
+    /* margin-top: 2rem; */
+    max-height: 100px;
+    opacity: 1;
 }
 
 .score-bar {
@@ -390,6 +435,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
     background-color: var(--color-secondary);
     border-radius: var(--border-radius);
     overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, margin 0.3s ease-in-out;
+}
+
+.experimental-enabled .score-bar {
+    /* margin-top: 2rem; */
+    max-height: 100px;
+    opacity: 1;
 }
 
 .score-indicator {
@@ -452,4 +505,22 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .social-link:hover {
     background-color: var(--color-secondary);
     color: var(--color-primary);
+}
+
+#specialCharsDensityContainer {
+    max-height: 0;
+    margin-left: 1rem;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, margin 0.3s ease-in-out;
+}
+
+.special-chars-enabled #specialCharsDensityContainer {
+    max-height: 100px;
+    opacity: 1;
+    margin-top: 1.5rem;
+}
+
+#enforce-alliteration-container {
+    /* margin-bottom: 1.5rem; */
 }

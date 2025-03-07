@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Password Generator</title>
+    <title>Diceware Password Generator</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-content">
-            <a href="https://brushwild.github.io" class="nav-logo">Secure Password Generator</a>
+            <a href="https://brushwild.github.io" class="nav-logo">Diceware Password Generator</a>
             <div class="social-links">
                 <a href="https://github.com/BrushWild" target="_blank" class="social-link">
                     <span class="material-symbols-rounded">code</span>
@@ -27,28 +27,27 @@
     <div class="container">
         <main>
             <div class="password-display">
+                <label for="passwordOutput">Generated Password</label>
                 <input type="text" id="passwordOutput" readonly>
+                <label for="rawWordsOutput">Raw Words</label>
                 <input type="text" id="rawWordsOutput" readonly>
+                <label for="dicewareNumbersOutput">Diceware Numbers</label>
                 <input type="text" id="dicewareNumbersOutput" readonly>
                 <button id="copyButton" class="icon-button">
                     <span class="material-symbols-rounded">content_copy</span>
                 </button>
             </div>
 
+            <button id="generateButton" class="primary-button">
+                <span class="material-symbols-rounded">autorenew</span>
+                Generate New Password
+            </button>
+
             <div class="options-panel">
                 <div class="slider-container">
                     <label for="wordCount">Number of Words</label>
                     <input type="range" id="wordCount" min="3" max="8" value="4">
                     <span id="wordCountValue">4</span>
-                </div>
-
-                <div class="slider-container">
-                    <label for="scoreThreshold">Minimum Password Score
-                        <span class="tooltip-trigger material-symbols-rounded">info</span>
-                        <span class="tooltip">Password score is based on word count, natural language patterns, and word length balance. Higher scores indicate more memorable and secure passwords.</span>
-                    </label>
-                    <input type="range" id="scoreThreshold" min="0" max="10" value="5" step="0.5">
-                    <span id="scoreThresholdValue">5</span>
                 </div>
 
                 <div class="format-options">
@@ -76,32 +75,55 @@
                     </div>
                 </div>
 
-                <div class="switch-container">
-                    <label for="specialChars">Use Special Characters</label>
+                <div class="switch-container" id="enforce-alliteration-container">
+                    <label for="alliteration">Enforce Alliteration</label>
                     <label class="switch">
-                        <input type="checkbox" id="specialChars">
+                        <input type="checkbox" id="alliteration" name="alliteration">
                         <span class="slider round"></span>
                     </label>
                 </div>
 
-                <div class="slider-container" id="specialCharsDensityContainer">
-                    <label for="specialCharsDensity">Special Character Density</label>
-                    <input type="range" id="specialCharsDensity" min="1" max="100" value="1" step="1">
-                    <span id="specialCharsDensityValue">1%</span>
+                <div class="special-char-container">
+                    <div class="switch-container">
+                        <label for="specialChars">Use Special Characters</label>
+                        <label class="switch">
+                            <input type="checkbox" id="specialChars">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+    
+                    <div class="slider-container" id="specialCharsDensityContainer">
+                        <label for="specialCharsDensity">Special Character Density</label>
+                        <input type="range" id="specialCharsDensity" min="1" max="100" value="1" step="1">
+                        <span id="specialCharsDensityValue">1%</span>
+                    </div>
                 </div>
-            </div>
 
-            <button id="generateButton" class="primary-button">
-                <span class="material-symbols-rounded">autorenew</span>
-                Generate Password
-            </button>
-
-            <div class="score-display">
-                <label>Password Score:</label>
-                <div class="score-bar">
-                    <div id="scoreIndicator" class="score-indicator"></div>
+                <div class="score-container">
+                    <div class="switch-container">
+                        <label for="experimentalFeatures">Show Advanced Features</label>
+                        <label class="switch">
+                            <input type="checkbox" id="experimentalFeatures">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="score-display">
+                        <div class="slider-container">
+                            <label for="scoreThreshold">Minimum Password Score
+                                <span class="tooltip-trigger material-symbols-rounded">info</span>
+                                <span class="tooltip">Password score is based on word count, natural language patterns, and word length balance. Higher scores indicate more memorable and secure passwords.</span>
+                            </label>
+                            <input type="range" id="scoreThreshold" min="0" max="10" value="1" step="0.5">
+                            <span id="scoreThresholdValue">5</span>
+                        </div>
+        
+                        <label>Password Score:</label>
+                        <!-- <div class="score-bar">
+                            <div id="scoreIndicator" class="score-indicator"></div>
+                        </div> -->
+                        <span id="scoreValue">0</span>
+                    </div>
                 </div>
-                <span id="scoreValue">0</span>
             </div>
         </main>
     </div>
